@@ -1,0 +1,35 @@
+Introduction: 
+
+This is a simple Python application that uses a Joke API to generate jokes.
+
+Getting Started:
+
+To get started please make sure you have docker installed if you want to run the included Dockerfile. Otherwise, here are some basic steps to get started. 
+
+1. pip install -r requirements.txt
+2. python joke_machine.py -n 3
+
+With Docker
+
+1. docker build -t joke_machine .   
+2. docker run joke_machine
+
+Assignment: 
+
+The objective of this assignment is to create a suite of unit tests and a suite of component tests that showcases your thought process towards testing an application. Attempt to mock out any dependencies to external resources if possible.
+
+1. Create a suite of unit tests that test these functions: 
+    get_joke_api()
+    get_joke_type()
+    get_joke()
+    joke_machine_runner()
+
+2. Create a suite of component tests that test the application as a whole. Think of edge cases an end user might attempt. 
+
+Pre-existing Bugs/Issues:
+
+This program is not perfect by any means. Any bugs you find do not need to be fixed. If you do encounter bugs, record them in a readme. 
+
+Submission: 
+
+Include a readme explaining the unit tests and component tests, as well as how to run them. There are empty folders to place the respective tests into. 
