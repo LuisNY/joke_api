@@ -1,16 +1,9 @@
 import sys
 
 sys.path.append('../Test Automation')
-
-import json
-import os
 import unittest
 from unittest import mock
-
-from joke_machine import BASE_URL, get_joke_type, get_joke_api, get_joke, joke_machine_runner
-
-#     get_joke()
-#     joke_machine_runner()
+from joke_machine import get_joke_type, get_joke_api, get_joke, joke_machine_runner
 
 # joke = 'No Joke Found' -> initialized but never used
 # we are always returning ValueError
@@ -90,7 +83,7 @@ class GetJokeApiTest(unittest.TestCase):
 
     @staticmethod
     def mocked_request_exception(args):
-        raise Exception('Exception occurred')
+        raise ValueError('Exception occurred')
 
     # mock valid request/response with status code = 200
     @mock.patch('requests.get', side_effect=mocked_request_200)
@@ -238,6 +231,47 @@ class GetJokeTest(unittest.TestCase):
             assert False
 
 
+# test joke_machine_runner()
+class GetJokeMachineRunnerTest(unittest.TestCase):
+
+    @staticmethod
+    def mocked_joke_api_200():
+        return MockResponse(200, joke_type='single')
+
+    @staticmethod
+    def mocked_joke_api_exception(args):
+        raise ValueError('Exception occurred')
+
+    # test function when everythin goes well
+    @mock.patch('joke_machine.get_joke_api', side_effect=mocked_joke_api_200)
+    @mock.patch('joke_machine.print')
+    def test_joke_machine_runner_valid_n(self, mocked_print, mocked_get_joke_api):
+        joke_machine_runner(3)
+
+        assert mocked_get_joke_api.call_count == 3
+        assert mocked_print.call_count == 3
+
+        assert len(mocked_get_joke_api.call_args_list) == 3
+        assert len(mocked_print.call_args_list) == 3
+
+        # make sure we printed the joke
+        expected_string = 'I\'m reading a book about anti-gravity. It\'s impossible to put down!'
+        assert mocked_print.call_args_list[0][0][0] == expected_string
+        assert mocked_print.call_args_list[1][0][0] == expected_string
+        assert mocked_print.call_args_list[2][0][0] == expected_string
+
+    # test function when api call fails
+    @mock.patch('requests.get', side_effect=mocked_joke_api_exception)
+    @mock.patch('joke_machine.print')
+    def test_joke_machine_runner_valid_n(self, mocked_print, mocked_get_joke_api):
+        joke_machine_runner(3)
+        self.assertEqual(mocked_get_joke_api.call_count, 3)
+        self.assertEqual(mocked_print.call_count, 3)
+
+        # make sure we printed the error
+        assert type(mocked_print.call_args_list[0][0][0]) == ValueError
+        assert type(mocked_print.call_args_list[1][0][0]) == ValueError
+        assert type(mocked_print.call_args_list[2][0][0]) == ValueError
 
 
 if __name__ == '__main__':
