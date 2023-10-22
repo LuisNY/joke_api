@@ -1,1 +1,17 @@
-A placeholder for the readme for the unit tests. 
+The unit tests can be run by executing the following command from the main directory:
+
+python ./unit_tests/unit_tests.py
+
+The unit tests are divided into 4 separate classes, each class tests one of the functions in the following order:
+- get_joke_api()
+- get_joke_type()
+- get_joke()
+- joke_machine_runner()
+
+The idea behind these tests is to make sure that each one of the above mentioned functions works as expected under different circumstances (different input values).
+
+I have implemented a class called MockResponse to mock the requests.models.Response object.
+All the API calls to "https://v2.jokeapi.dev/joke/Any?safe-mode" are mocked in these tests.
+MockResponse implements the basic property "status_code" which is in common with the requests.models.Response object,
+and the method json(), which returns the json object of the response body.
+It is possible to modify the returned value of the json() method by passing some config arguments to MockResponse constructor.

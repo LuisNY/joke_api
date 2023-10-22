@@ -4,74 +4,7 @@ sys.path.append('../Test Automation')
 import unittest
 from unittest import mock
 from joke_machine import get_joke_type, get_joke_api, get_joke, joke_machine_runner
-
-# joke = 'No Joke Found' -> initialized but never used
-# we are always returning ValueError
-# if key error happens we are not logging it properly
-# no one is checking for status code
-# names of vars too long
-
-mocked_obj_single = \
-    {
-        "error": False,
-        "category": "Pun",
-        "type": "single",
-        "joke": "I'm reading a book about anti-gravity. It's impossible to put down!",
-        "flags": {
-            "nsfw": False,
-            "religious": False,
-            "political": False,
-            "racist": False,
-            "sexist": False,
-            "explicit": False
-        },
-        "id": 126,
-        "safe": True,
-        "lang": "en"
-    }
-
-mocked_obj_twoparts = \
-    {
-        "error": False,
-        "category": "Misc",
-        "type": "twopart",
-        "setup": "This morning I accidentally made my coffee with Red Bull instead of water.",
-        "delivery": "I was already on the highway when I noticed I forgot my car at home.",
-        "flags": {
-            "nsfw": False,
-            "religious": False,
-            "political": False,
-            "racist": False,
-            "sexist": False,
-            "explicit": False
-        },
-        "id": 146,
-        "safe": True,
-        "lang": "en"
-    }
-
-
-# simulate behavior of requests.models.Response object
-class MockResponse:
-    def __init__(self, status_code, joke_type='single', missing_fields=None, raise_on_json=False):
-        if missing_fields is None:
-            missing_fields = []
-        self.status_code = status_code
-        self.missing_fields = missing_fields
-        self.raise_on_json = raise_on_json
-        self.joke_type = joke_type
-
-    def json(self):
-
-        if self.raise_on_json:
-            raise Exception('Could not return json object')
-
-        missing_field_obj = mocked_obj_single.copy() if self.joke_type == 'single' else mocked_obj_twoparts.copy()
-        for field in self.missing_fields:
-            if field in missing_field_obj:
-                del missing_field_obj[field]
-
-        return missing_field_obj
+from common_fixtures import MockResponse, mocked_obj_twoparts
 
 
 # test get_joke_api()
@@ -198,7 +131,7 @@ class GetJokeTest(unittest.TestCase):
 
     @staticmethod
     def test_get_joke_invalid_json():
-        # test single response with missing field
+        # test single response with missing field (joke)
         api_response = MockResponse(200, joke_type='single', missing_fields=['joke'])
         joke_type = 'single'
         try:
@@ -239,20 +172,16 @@ class GetJokeMachineRunnerTest(unittest.TestCase):
         return MockResponse(200, joke_type='single')
 
     @staticmethod
-    def mocked_joke_api_exception(args):
+    def mocked_request_exception(args):
         raise ValueError('Exception occurred')
 
-    # test function when everythin goes well
+    # test function when everything goes well
     @mock.patch('joke_machine.get_joke_api', side_effect=mocked_joke_api_200)
     @mock.patch('joke_machine.print')
     def test_joke_machine_runner_valid_n(self, mocked_print, mocked_get_joke_api):
         joke_machine_runner(3)
-
         assert mocked_get_joke_api.call_count == 3
         assert mocked_print.call_count == 3
-
-        assert len(mocked_get_joke_api.call_args_list) == 3
-        assert len(mocked_print.call_args_list) == 3
 
         # make sure we printed the joke
         expected_string = 'I\'m reading a book about anti-gravity. It\'s impossible to put down!'
@@ -261,12 +190,12 @@ class GetJokeMachineRunnerTest(unittest.TestCase):
         assert mocked_print.call_args_list[2][0][0] == expected_string
 
     # test function when api call fails
-    @mock.patch('requests.get', side_effect=mocked_joke_api_exception)
+    @mock.patch('requests.get', side_effect=mocked_request_exception)
     @mock.patch('joke_machine.print')
-    def test_joke_machine_runner_valid_n(self, mocked_print, mocked_get_joke_api):
+    def test_joke_machine_runner_valid_n(self, mocked_print, mocked_request):
         joke_machine_runner(3)
-        self.assertEqual(mocked_get_joke_api.call_count, 3)
-        self.assertEqual(mocked_print.call_count, 3)
+        assert mocked_request.call_count == 3
+        assert mocked_print.call_count == 3
 
         # make sure we printed the error
         assert type(mocked_print.call_args_list[0][0][0]) == ValueError

@@ -15,7 +15,6 @@ def argument_parser():
 
     :return args: The parsed CLI args
     '''
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--number_of_jokes", type=int, default=1, help="The number of jokes you want to generate")
     args = parser.parse_args()
@@ -98,7 +97,6 @@ def joke_machine_runner(number_of_jokes_to_generate):
 
     :return none:
     '''
-
     for i in range(number_of_jokes_to_generate):
         try:
             joke_api = get_joke_api()
@@ -116,41 +114,9 @@ def main():
 if __name__ == '__main__':
     main()
 
-#
-#
-# {
-#   "error": false,
-#   "category": "Pun",
-#   "type": "single",
-#   "joke": "I'm reading a book about anti-gravity. It's impossible to put down!",
-#   "flags": {
-#     "nsfw": false,
-#     "religious": false,
-#     "political": false,
-#     "racist": false,
-#     "sexist": false,
-#     "explicit": false
-#   },
-#   "id": 126,
-#   "safe": true,
-#   "lang": "en"
-# }
-#
-# {
-#   "error": false,
-#   "category": "Misc",
-#   "type": "twopart",
-#   "setup": "This morning I accidentally made my coffee with Red Bull instead of water.",
-#   "delivery": "I was already on the highway when I noticed I forgot my car at home.",
-#   "flags": {
-#     "nsfw": false,
-#     "religious": false,
-#     "political": false,
-#     "racist": false,
-#     "sexist": false,
-#     "explicit": false
-#   },
-#   "id": 146,
-#   "safe": true,
-#   "lang": "en"
-# }
+# joke = 'No Joke Found' -> initialized but never used
+# we are always returning ValueError
+# if key error happens we are not logging it properly
+# no one is checking for status code
+# names of vars too long
+# no try/catch in argparser
