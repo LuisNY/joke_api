@@ -16,8 +16,11 @@ Below are a few things I noticed while reading thru the application code:
 
 - in get_joke() function, the 'joke' variable is initialized to 'No Joke Found' but this value is eventually never used
 
-- when we get back a joke from the API call, we do not validate any fields, and if a field is missing we simply print a ValueError...
-we could be more specific and raise a more specific exception to inform the user of the real issue (like KeyError in the case of a missing field)
+- when we get back a joke from the API call, we do not validate any fields, and if a field is missing we simply raise a ValueError
+we also do not validate the type, and assume that the fields will be strings (fair assumption)
 
 - in the API call we do not check for status_code. Even in my (unit) tests, I have only mocked a status_code of 200 because
 the application is never checking for that value
+
+- if the API endpoint cannot be reached we do not have a re-try mechanism in place,
+and since we are not checking for the status_code we won't know what went wrong
