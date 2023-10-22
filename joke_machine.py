@@ -113,10 +113,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# joke = 'No Joke Found' -> initialized but never used
-# we are always returning ValueError
-# if key error happens we are not logging it properly
-# no one is checking for status code
-# names of vars too long
-# no try/catch in argparser

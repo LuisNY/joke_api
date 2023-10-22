@@ -1,1 +1,23 @@
-A placeholder for the readme of the component tests. 
+To run these component tests please execute the following command:
+
+python ./component_tests/component_tests.py
+
+I have used the unitest package also to implement these component tests, but these test cases attempt to test the
+application as a whole, by calling the main() function in joke_machine.py file.
+
+The idea here is to test the application behavior in different scenarios based on the user input.
+For example, what happens if the user runs th application without any input args? Or what if the input args are invalid?
+
+Any API call to "https://v2.jokeapi.dev/joke/Any?safe-mode" is mocked here.
+
+These component tests use the same fixtures data and data structure used in the unit test (defined in common_fixtures.py file).
+
+Below are a few things I noticed while reading thru the application code:
+
+- in get_joke() function, the 'joke' variable is initialized to 'No Joke Found' but this value is eventually never used
+
+- when we get back a joke from the API call, we do not validate any fields, and if a field is missing we simply print a ValueError...
+we could be more specific and raise a more specific exception to inform the user of the real issue (like KeyError in the case of a missing field)
+
+- in the API call we do not check for status_code. Even in my (unit) tests, I have only mocked a status_code of 200 because
+the application is never checking for that value

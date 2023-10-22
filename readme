@@ -11,7 +11,7 @@ To get started please make sure you have docker installed if you want to run the
 
 With Docker
 
-1. docker build -t joke_machine .   
+1. docker build -t joke_machine .
 2. docker run joke_machine
 
 Assignment: 

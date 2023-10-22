@@ -15,3 +15,7 @@ All the API calls to "https://v2.jokeapi.dev/joke/Any?safe-mode" are mocked in t
 MockResponse implements the basic property "status_code" which is in common with the requests.models.Response object,
 and the method json(), which returns the json object of the response body.
 It is possible to modify the returned value of the json() method by passing some config arguments to MockResponse constructor.
+
+Since the API calls are mocked, the returned data is also mocked.
+I took two examples from the real API responses, one for a single joke and one for a twopart joke and all test cases use one of these responses.
+The sample responses are defined in common_fixtures.py file.

@@ -1,8 +1,6 @@
-import subprocess
 import sys
 
 sys.path.append('../Test Automation')
-import argparse
 import unittest
 from unittest import mock
 
@@ -38,6 +36,16 @@ class ComponentTests(unittest.TestCase):
 
         assert mocked_get_joke_api.call_count == 5
         assert mocked_print.call_count == 5
+
+    @mock.patch('joke_machine.get_joke_api', side_effect=lambda: MockResponse(200))
+    @mock.patch('joke_machine.print')
+    def test_call_main_with_long_arg(self, mocked_print, mocked_get_joke_api):
+
+        sys.argv.append('--number_of_jokes=2')  # make sure it works using --number_of_jokes as well
+        main()
+
+        assert mocked_get_joke_api.call_count == 2
+        assert mocked_print.call_count == 2
 
     @mock.patch('joke_machine.get_joke_api', side_effect=lambda: MockResponse(200))
     @mock.patch('joke_machine.print')
